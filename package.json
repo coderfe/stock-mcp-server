@@ -1,0 +1,25 @@
+{
+  "name": "stock-mcp-server",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "bun build --entrypoints ./index.js --outdir=dist --minify --target node --watch",
+    "debug": "bunx @modelcontextprotocol/inspector bun index.js",
+    "check": "bunx @biomejs/biome check --fix --unsafe ."
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/express": "^5.0.1",
+    "lefthook": "^1.11.8"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.9.0",
+    "axios": "^1.8.4",
+    "axios-cache-interceptor": "^1.7.0",
+    "dayjs": "^1.11.13",
+    "express": "^5.1.0"
+  }
+}

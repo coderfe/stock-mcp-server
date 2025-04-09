@@ -1,0 +1,15 @@
+pre-commit:
+  parallel: true
+  commands:
+    biome-check:
+      glob: "*.{js,ts,jsx,tsx}"
+      run: bunx @biomejs/biome check --apply-unsafe {staged_files}
+    biome-format:
+      glob: "*.{js,ts,jsx,tsx}"
+      run: bunx @biomejs/biome format --write {staged_files}
+
+pre-push:
+  parallel: true
+  commands:
+    biome-ci:
+      run: bunx @biomejs/biome ci .
