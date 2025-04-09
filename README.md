@@ -1,15 +1,10 @@
-# stock-mcp-server
+# Stock MCP 服务器
 
-To install dependencies:
+基于 Model Context Protocol (MCP) 实现的股票市场数据处理和分析服务器。
 
-```bash
-bun install
-```
+## 功能特点
 
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.2.5. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+- 实时股票市场数据处理
+- 集成 AKTools 进行数据分析
+- 数据可视化仪表板服务
+- 基于高性能的 Bun 运行时构建
