@@ -1,18 +1,16 @@
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 import dayjs from '../lib/dayjs'
 import {
-  type MarketWeeklyParams,
-  fetchLimitUpPool,
-  fetchMarketWeeklyData,
   fetchStockChips,
   fetchStockHistory,
   fetchStockIndividualInfo,
   fetchStockMoneyFlow,
   fetchStockValuation,
-  fetchStrongStockPool,
-} from '../services/aktools'
+} from '../services/stock'
 import { fetchStockPositionBySymbol } from '../services/dashboard'
-import { fetchGGTStockList } from '../services/ggt'
+import { fetchGGTStockList } from '../services/stock-hk'
+import { fetchLimitUpPool, fetchStrongStockPool } from '../services/stock-pool'
+import { fetchMarketWeeklyData, type MarketWeeklyParams } from '../services/stock-index'
 
 export async function analysisStock(symbol: string): Promise<CallToolResult> {
   const now = dayjs()
@@ -205,7 +203,7 @@ export async function analysisStockStrength(days: number): Promise<CallToolResul
   }
 }
 
-export async function getGGTStockList(): Promise<CallToolResult> {
+export async function getHKStockList(): Promise<CallToolResult> {
   try {
     const result = await fetchGGTStockList()
     const limitedResult = result.slice(0, 30)

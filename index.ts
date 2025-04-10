@@ -3,13 +3,16 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod'
 import { clearCache } from './lib/redis'
 import {
-  analysisLimitUp,
   analysisStock,
+  analysisLimitUp,
   analysisStockStrength,
-  getGGTStockList,
+  getHKStockList,
   getMarketWeeklyData,
 } from './tools/aktools'
 import { getStockPosition, pushStockPrice } from './tools/dashboard'
+import { fetchStockHistory } from './services/stock'
+import { fetchHKStockHistory } from './services/stock-hk'
+import { getHKFamousStocks } from './tools/hk'
 
 const server = new McpServer(
   {
@@ -24,6 +27,58 @@ const server = new McpServer(
       },
     },
   },
+)
+
+server.tool(
+  'Individual Stock History',
+  '个股历史行情数据-A股',
+  {
+    symbol: z.string().regex(/^\d{6}$/, '股票代码必须是 6 位数字'),
+    startDate: z.string().regex(/^\d{8}$/, '开始日期格式错误，必须是 YYYYMMDD'),
+    endDate: z.string().regex(/^\d{8}$/, '结束日期格式错误，必须是 YYYYMMDD'),
+  },
+  async ({ symbol, startDate, endDate }) => {
+    const res = await fetchStockHistory({
+      symbol: symbol,
+      startDate: startDate,
+      endDate: endDate,
+    })
+    return {
+      content: [{
+        type: 'text',
+        text: `个股历史数据：${JSON.stringify(res)}`,
+      }]
+    }
+  }
+)
+
+server.tool(
+  'Individual Stock History — HK',
+  '个股历史行情数据-港股',
+  {
+    symbol: z.string().regex(/^\d{5}$/, '股票代码必须是 5 位数字'),
+    startDate: z.string().regex(/^\d{8}$/, '开始日期格式错误，必须是 YYYYMMDD'),
+    endDate: z.string().regex(/^\d{8}$/, '结束日期格式错误，必须是 YYYYMMDD'),
+  },
+  async ({ symbol, startDate, endDate }) => {
+    const res = await fetchHKStockHistory({
+      symbol: symbol,
+      startDate: startDate,
+      endDate: endDate,
+    })
+    return {
+      content: [{
+        type: 'text',
+        text: `${symbol} 历史数据：${JSON.stringify(res)}`,
+      }]
+    }
+  }
+)
+
+server.tool(
+  'Famous HK Stocks',
+  '优质港股',
+  getHKFamousStocks
 )
 
 server.tool(
@@ -54,7 +109,7 @@ server.tool(
   async ({ period }) => await getMarketWeeklyData(period),
 )
 
-server.tool('Get GGT Stock List', '港股通成分股', getGGTStockList)
+server.tool('Get GGT Stock List', '港股通成分股', getHKStockList)
 
 server.tool('Push Stock Price', '批量推送股票价格', pushStockPrice)
 

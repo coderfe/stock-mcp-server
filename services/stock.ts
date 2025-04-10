@@ -10,11 +10,6 @@ export async function fetchStockIndividualInfo(symbol: string) {
   return res.data
 }
 
-type HistoryParams = {
-  symbol: string
-  startDate: string
-  endDate: string
-}
 /**
  * 个股历史行情数据
  */
@@ -55,28 +50,6 @@ export async function fetchStockValuation(symbol: string) {
   return data[data.length - 1]
 }
 
-export type MarketWeeklyParams = {
-  symbol: string
-  period: 'daily' | 'weekly' | 'monthly'
-  startDate: string
-  endDate: string
-}
-
-/**
- * 大盘历史行情
- */
-export async function fetchMarketWeeklyData({
-  symbol,
-  period,
-  startDate,
-  endDate,
-}: MarketWeeklyParams) {
-  const res = await stockClient.get<IndexHistory[]>('/index_zh_a_hist', {
-    params: { symbol, period, start_date: startDate, end_date: endDate },
-  })
-  return res.data
-}
-
 /**
  * 个股资金流向
  */
@@ -85,34 +58,4 @@ export async function fetchStockMoneyFlow(symbol: string, days = 3) {
     params: { stock: symbol },
   })
   return res.data.slice(-days)
-}
-
-/**
- * 获取涨停股池
- */
-export async function fetchLimitUpPool(date: string) {
-  try {
-    const res = await stockClient.get<LimitUpStock[]>('/stock_zt_pool_em', {
-      params: { date },
-    })
-    return res.data
-  } catch (e) {
-    console.log(e)
-    return []
-  }
-}
-
-/**
- * 获取强势股池
- */
-export async function fetchStrongStockPool(date: string) {
-  try {
-    const res = await stockClient.get<StrongStock[]>('/stock_zt_pool_strong_em', {
-      params: { date },
-    })
-    return res.data
-  } catch (e) {
-    console.log(e)
-    return []
-  }
 }
