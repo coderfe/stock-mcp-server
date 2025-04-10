@@ -1,7 +1,7 @@
-import dayjs from 'dayjs'
-import localeData from 'dayjs/plugin/localeData'
-import updateLocale from 'dayjs/plugin/updateLocale'
+import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
+import dayjs from '../lib/dayjs'
 import {
+  type MarketWeeklyParams,
   fetchLimitUpPool,
   fetchMarketWeeklyData,
   fetchStockChips,
@@ -10,17 +10,9 @@ import {
   fetchStockMoneyFlow,
   fetchStockValuation,
   fetchStrongStockPool,
-  type MarketWeeklyParams
 } from '../services/aktools'
-import { fetchGGTStockList } from '../services/ggt'
 import { fetchStockPositionBySymbol } from '../services/dashboard'
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
-
-dayjs.extend(updateLocale)
-dayjs.extend(localeData)
-dayjs.locale('zh-cn', {
-  weekStart: 1,
-})
+import { fetchGGTStockList } from '../services/ggt'
 
 export async function analysisStock(symbol: string): Promise<CallToolResult> {
   const now = dayjs()
@@ -91,7 +83,9 @@ export async function analysisStock(symbol: string): Promise<CallToolResult> {
   return result as CallToolResult
 }
 
-export async function getMarketWeeklyData(period: MarketWeeklyParams['period']): Promise<CallToolResult> {
+export async function getMarketWeeklyData(
+  period: MarketWeeklyParams['period'],
+): Promise<CallToolResult> {
   const indexes = [
     {
       name: '沪深 300',

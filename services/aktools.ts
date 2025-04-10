@@ -19,7 +19,7 @@ type HistoryParams = {
  * 个股历史行情数据
  */
 export async function fetchStockHistory({ symbol, startDate, endDate }: HistoryParams) {
-  const res = await stockClient.get<StockHistory>('/stock_zh_a_hist', {
+  const res = await stockClient.get<StockHistory[]>('/stock_zh_a_hist', {
     params: { symbol, start_date: startDate, end_date: endDate },
   })
   return res.data

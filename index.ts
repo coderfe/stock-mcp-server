@@ -56,9 +56,9 @@ server.tool(
 
 server.tool('Get GGT Stock List', '港股通成分股', getGGTStockList)
 
-server.tool('Push Stock Price', '批量推送股票价格', async () => await pushStockPrice())
+server.tool('Push Stock Price', '批量推送股票价格', pushStockPrice)
 
-server.tool('Get Stock Position', '获取持仓信息', async () => await getStockPosition())
+server.tool('Get Stock Position', '获取持仓信息', getStockPosition)
 
 server.tool('Clear Redis Cache', '清除 Redis 缓存', async () => {
   try {

@@ -10,7 +10,7 @@ export const myClient = axios.create({
 })
 
 export async function fetchStockPosition() {
-  const res = await myClient.get('/trade/positions')
+  const res = await myClient.get<StockPositionsResponse>('/trade/positions')
   return res.data
 }
 
@@ -20,11 +20,11 @@ export async function fetchStockPositionBySymbol(symbol: string) {
 }
 
 export async function fetchMyStocks() {
-  const res = await myClient.get('/trade/stocks')
+  const res = await myClient.get<StockInfoResponse>('/trade/stocks')
   return res.data.data
 }
 
-export async function updateStockBatch(data: any) {
+export async function updateStockBatch(data: UpdateStockPriceFormData[]) {
   const res = await myClient.post('/trade/positions/batch', data)
   return JSON.stringify(res.data)
 }
