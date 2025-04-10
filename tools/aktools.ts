@@ -10,8 +10,11 @@ import {
   fetchStockMoneyFlow,
   fetchStockValuation,
   fetchStrongStockPool,
+  type MarketWeeklyParams
 } from '../services/aktools'
+import { fetchGGTStockList } from '../services/ggt'
 import { fetchStockPositionBySymbol } from '../services/dashboard'
+import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 
 dayjs.extend(updateLocale)
 dayjs.extend(localeData)
@@ -19,7 +22,7 @@ dayjs.locale('zh-cn', {
   weekStart: 1,
 })
 
-export async function analysisStock(symbol) {
+export async function analysisStock(symbol: string): Promise<CallToolResult> {
   const now = dayjs()
   const startDate = now.subtract(3, 'month').format('YYYYMMDD')
   const endDate = now.format('YYYYMMDD')
@@ -85,10 +88,10 @@ export async function analysisStock(symbol) {
   } catch (e) {
     console.log(e)
   }
-  return result
+  return result as CallToolResult
 }
 
-export async function getMarketWeeklyData(period) {
+export async function getMarketWeeklyData(period: MarketWeeklyParams['period']): Promise<CallToolResult> {
   const indexes = [
     {
       name: '沪深 300',
@@ -123,6 +126,7 @@ export async function getMarketWeeklyData(period) {
   )
   const data = res.map((item, index) => {
     return {
+      // @ts-ignore
       name: indexes[index].name,
       data: item,
     }
@@ -137,7 +141,7 @@ export async function getMarketWeeklyData(period) {
   }
 }
 
-export async function analysisLimitUp(days) {
+export async function analysisLimitUp(days: number): Promise<CallToolResult> {
   try {
     const dates = parseDates(days)
     const limitUpResults = await Promise.all(dates.map((date) => fetchLimitUpPool(date)))
@@ -172,7 +176,7 @@ export async function analysisLimitUp(days) {
   }
 }
 
-export async function analysisStockStrength(days) {
+export async function analysisStockStrength(days: number): Promise<CallToolResult> {
   try {
     const dates = parseDates(days)
     const limitUpResults = await Promise.all(dates.map((date) => fetchStrongStockPool(date)))
@@ -207,14 +211,40 @@ export async function analysisStockStrength(days) {
   }
 }
 
-function parseDates(days) {
+export async function getGGTStockList(): Promise<CallToolResult> {
+  try {
+    const result = await fetchGGTStockList()
+    const limitedResult = result.slice(0, 30)
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `港股通成分股：${JSON.stringify(limitedResult)}`,
+        },
+      ],
+    }
+  } catch (error) {
+    console.error('获取港股通成分股数据失败：', error)
+    return {
+      isError: true,
+      content: [
+        {
+          type: 'text',
+          text: `获取港股通成分股数据失败：${error}`,
+        },
+      ],
+    }
+  }
+}
+
+function parseDates(days: number) {
   const dates = Array.from({ length: days }, (_, index) => {
     return dayjs().subtract(index, 'day').format('YYYYMMDD')
   })
   return dates
 }
 
-function isMainBoardStock(symbol) {
+function isMainBoardStock(symbol: string) {
   const code = String(symbol).trim()
   if (!/^\d{6}$/.test(code)) {
     return false

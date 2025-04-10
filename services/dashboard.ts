@@ -14,7 +14,7 @@ export async function fetchStockPosition() {
   return res.data
 }
 
-export async function fetchStockPositionBySymbol(symbol) {
+export async function fetchStockPositionBySymbol(symbol: string) {
   const res = await myClient.get(`/trade/positions/${symbol}`)
   return JSON.stringify(res.data)
 }
@@ -24,7 +24,7 @@ export async function fetchMyStocks() {
   return res.data.data
 }
 
-export async function updateStockBatch(data) {
+export async function updateStockBatch(data: any) {
   const res = await myClient.post('/trade/positions/batch', data)
   return JSON.stringify(res.data)
 }

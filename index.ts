@@ -6,6 +6,7 @@ import {
   analysisStock,
   analysisStockStrength,
   getMarketWeeklyData,
+  getGGTStockList,
 } from './tools/aktools'
 import { getStockPosition, pushStockPrice } from './tools/dashboard'
 
@@ -50,6 +51,12 @@ server.tool(
   '大盘周报',
   { period: z.enum(['daily', 'weekly', 'monthly']) },
   async ({ period }) => await getMarketWeeklyData(period),
+)
+
+server.tool(
+  'Get GGT Stock List',
+  '港股通成分股',
+  getGGTStockList,
 )
 
 server.tool('Push Stock Price', '批量推送股票价格', async () => await pushStockPrice())

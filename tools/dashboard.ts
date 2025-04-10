@@ -1,12 +1,13 @@
 import dayjs from 'dayjs'
 import { fetchStockHistory } from '../services/aktools'
 import { fetchMyStocks, fetchStockPosition, updateStockBatch } from '../services/dashboard'
+import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 
-export async function pushStockPrice() {
+export async function pushStockPrice(): Promise<CallToolResult> {
   try {
     const stocks = await fetchMyStocks()
-    const codes = stocks.map((stock) => stock.code)
-    const requests = codes.map((code) => {
+    const codes = stocks.map((stock: any) => stock.code)
+    const requests = codes.map((code: string) => {
       return fetchStockHistory({
         symbol: code,
         startDate: dayjs().format('YYYYMMDD'),
@@ -14,7 +15,7 @@ export async function pushStockPrice() {
       })
     })
     const results = await Promise.all(requests)
-    const stockPrices = results.map((item) => {
+    const stockPrices = results.map((item: any) => {
       const [stock] = item
       return {
         code: stock.股票代码,
@@ -43,7 +44,7 @@ export async function pushStockPrice() {
   }
 }
 
-export async function getStockPosition() {
+export async function getStockPosition(): Promise<CallToolResult> {
   try {
     const res = await fetchStockPosition()
     return {
