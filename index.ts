@@ -9,6 +9,7 @@ import {
   getGGTStockList,
 } from './tools/aktools'
 import { getStockPosition, pushStockPrice } from './tools/dashboard'
+import { clearCache } from './lib/redis'
 
 const server = new McpServer(
   {
@@ -62,6 +63,34 @@ server.tool(
 server.tool('Push Stock Price', '批量推送股票价格', async () => await pushStockPrice())
 
 server.tool('Get Stock Position', '获取持仓信息', async () => await getStockPosition())
+
+
+server.tool(
+  'Clear Redis Cache',
+  '清除 Redis 缓存',
+  async () => {
+    try {
+      const deletedCount = await clearCache()
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `成功清除缓存 ${deletedCount} 条`,
+          }
+        ]
+      }
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `清除缓存失败: ${error}`,
+          }
+        ]
+      }
+    }
+  }
+)
 
 const transport = new StdioServerTransport()
 await server.connect(transport)
