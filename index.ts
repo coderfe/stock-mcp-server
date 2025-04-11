@@ -13,6 +13,7 @@ import { getStockPosition, pushStockPrice } from './tools/dashboard'
 import { fetchStockHistory } from './services/stock'
 import { fetchHKStockHistory } from './services/stock-hk'
 import { getHKFamousStocks } from './tools/hk'
+import { getIndustryBoardList, getIndustryBoardStocks } from './tools/board'
 
 const server = new McpServer(
   {
@@ -44,12 +45,14 @@ server.tool(
       endDate: endDate,
     })
     return {
-      content: [{
-        type: 'text',
-        text: `个股历史数据：${JSON.stringify(res)}`,
-      }]
+      content: [
+        {
+          type: 'text',
+          text: `个股历史数据：${JSON.stringify(res)}`,
+        },
+      ],
     }
-  }
+  },
 )
 
 server.tool(
@@ -67,19 +70,17 @@ server.tool(
       endDate: endDate,
     })
     return {
-      content: [{
-        type: 'text',
-        text: `${symbol} 历史数据：${JSON.stringify(res)}`,
-      }]
+      content: [
+        {
+          type: 'text',
+          text: `${symbol} 历史数据：${JSON.stringify(res)}`,
+        },
+      ],
     }
-  }
+  },
 )
 
-server.tool(
-  'Famous HK Stocks',
-  '优质港股',
-  getHKFamousStocks
-)
+server.tool('Famous HK Stocks', '优质港股', getHKFamousStocks)
 
 server.tool(
   'Analysis Stock',
@@ -114,6 +115,15 @@ server.tool('Get GGT Stock List', '港股通成分股', getHKStockList)
 server.tool('Push Stock Price', '批量推送股票价格', pushStockPrice)
 
 server.tool('Get Stock Position', '获取持仓信息', getStockPosition)
+
+server.tool('Fetch Industry Board List', '获取行业板块列表', getIndustryBoardList)
+
+server.tool(
+  'Fetch Industry Board Stocks',
+  '获取行业板块成分股',
+  { symbol: z.string().describe('行业板块名称') },
+  async ({ symbol }) => await getIndustryBoardStocks(symbol),
+)
 
 server.tool('Clear Redis Cache', '清除 Redis 缓存', async () => {
   try {

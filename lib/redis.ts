@@ -1,16 +1,17 @@
+import type { InternalAxiosRequestConfig } from 'axios'
 import { Redis } from 'ioredis'
 
 export const CACHE_DURATION = 24 * 60 * 60
 export const CACHE_PREFIX = 'stock_api:'
 
-export const isEmptyData = (data: any): boolean => {
+export const isEmptyData = (data: unknown | null | undefined | Array<unknown> | Record<string, unknown>): boolean => {
   if (data === null || data === undefined) return true
   if (Array.isArray(data) && data.length === 0) return true
   if (typeof data === 'object' && Object.keys(data).length === 0) return true
   return false
 }
 
-export const generateCacheKey = (config: any): string => {
+export const generateCacheKey = (config: InternalAxiosRequestConfig): string => {
   const { baseURL, url, params } = config
   const queryString = new URLSearchParams(params).toString()
   const key = `${baseURL}${url}?${queryString}`
@@ -32,10 +33,10 @@ export const getCache = async (key: string) => {
   return null
 }
 
-export const setCache = async (key: string, value: any) => {
+export const setCache = async <T = unknown>(key: string, value: T, duration: number = CACHE_DURATION) => {
   try {
     if (!isEmptyData(value)) {
-      await redis.setex(key, CACHE_DURATION, JSON.stringify(value))
+      await redis.setex(key, duration, JSON.stringify(value))
     }
   } catch (error) {
     console.error('Redis set error:', error)

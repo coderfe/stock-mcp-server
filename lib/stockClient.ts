@@ -14,7 +14,14 @@ stockClient.interceptors.request.use(async (config) => {
     const cacheKey = generateCacheKey(config)
     const cachedData = await getCache(cacheKey)
     if (cachedData) {
-      const error: any = new Error('Cancel request due to cached data')
+      const error = new Error('Cancel request due to cached data') as Error & {
+        config: typeof config;
+        response: {
+          data: unknown;
+          status: number;
+          statusText: string;
+        };
+      }
       error.config = config
       error.response = {
         data: cachedData,
@@ -31,7 +38,8 @@ stockClient.interceptors.response.use(
   async (response) => {
     if (response.config.method?.toLowerCase() === 'get') {
       const cacheKey = generateCacheKey(response.config)
-      await setCache(cacheKey, response.data)
+      const cacheDuration = response.config.headers?.['cache-duration'] as number | undefined
+      await setCache(cacheKey, response.data, cacheDuration)
     }
     return response
   },
