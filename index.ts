@@ -1,19 +1,19 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod'
-import { clearCache } from './lib/redis'
+import { clearCache } from '@lib/redis'
 import {
   analysisStock,
   analysisLimitUp,
   analysisStockStrength,
   getHKStockList,
   getMarketWeeklyData,
-} from './tools/aktools'
-import { getStockPosition, pushStockPrice } from './tools/dashboard'
-import { fetchStockHistory } from './services/stock'
-import { fetchHKStockHistory } from './services/stock-hk'
-import { getHKFamousStocks } from './tools/hk'
-import { getIndustryBoardList, getIndustryBoardStocks } from './tools/board'
+} from '@tools/aktools'
+import { getStockPosition, pushStockPrice } from '@tools/dashboard'
+import { fetchStockHistory } from '@services/stock'
+import { fetchHKStockHistory } from '@services/stock-hk'
+import { getHKFamousStocks } from '@tools/hk'
+import { getIndustryBoardList, getIndustryBoardStocks } from '@tools/board'
 
 const server = new McpServer(
   {

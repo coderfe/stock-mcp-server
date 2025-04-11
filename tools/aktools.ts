@@ -1,16 +1,16 @@
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
-import dayjs from '../lib/dayjs'
+import dayjs from '@lib/dayjs'
 import {
   fetchStockChips,
   fetchStockHistory,
   fetchStockIndividualInfo,
   fetchStockMoneyFlow,
   fetchStockValuation,
-} from '../services/stock'
-import { fetchStockPositionBySymbol } from '../services/dashboard'
-import { fetchGGTStockList } from '../services/stock-hk'
-import { fetchLimitUpPool, fetchStrongStockPool } from '../services/stock-pool'
-import { fetchMarketWeeklyData, type MarketWeeklyParams } from '../services/stock-index'
+} from '@services/stock'
+import { fetchStockPositionBySymbol } from '@services/dashboard'
+import { fetchGGTStockList } from '@services/stock-hk'
+import { fetchLimitUpPool, fetchStrongStockPool } from '@services/stock-pool'
+import { fetchMarketWeeklyData, type MarketWeeklyParams } from '@services/stock-index'
 
 export async function analysisStock(symbol: string): Promise<CallToolResult> {
   const now = dayjs()

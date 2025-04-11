@@ -1,5 +1,5 @@
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
-import { fetchHKFamousStocks } from '../services/stock-hk'
+import { fetchHKFamousStocks } from '@services/stock-hk'
 
 export async function getHKFamousStocks(): Promise<CallToolResult> {
   try {

@@ -1,7 +1,7 @@
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
-import dayjs from '../lib/dayjs'
-import { fetchStockHistory } from '../services/stock'
-import { fetchMyStocks, fetchStockPosition, updateStockBatch } from '../services/dashboard'
+import dayjs from '@lib/dayjs'
+import { fetchStockHistory } from '@services/stock'
+import { fetchMyStocks, fetchStockPosition, updateStockBatch } from '@services/dashboard'
 
 export async function pushStockPrice(): Promise<CallToolResult> {
   try {

@@ -1,4 +1,4 @@
-import stockClient from "../lib/stockClient"
+import stockClient from "@lib/stockClient"
 
 /**
  * 获取涨停股池

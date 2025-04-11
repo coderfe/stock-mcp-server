@@ -1,5 +1,5 @@
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
-import { fetchIndustryBoardList, fetchIndustryBoardStocks } from '../services/stock-board'
+import { fetchIndustryBoardList, fetchIndustryBoardStocks } from '@services/stock-board'
 
 export async function getIndustryBoardList(): Promise<CallToolResult> {
   try {

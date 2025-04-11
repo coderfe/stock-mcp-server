@@ -1,4 +1,4 @@
-import stockClient from "../lib/stockClient"
+import stockClient from "@lib/stockClient"
 
 /**
  * 个股信息查询
