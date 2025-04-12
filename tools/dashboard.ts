@@ -1,9 +1,10 @@
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 import dayjs from '@lib/dayjs'
-import { fetchStockHistory } from '@services/stock'
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 import { fetchMyStocks, fetchStockPosition, updateStockBatch } from '@services/dashboard'
+import { fetchStockHistory } from '@services/stock'
 
-export async function pushStockPrice(): Promise<CallToolResult> {
+async function pushStockPrice(): Promise<CallToolResult> {
   try {
     const stocks = await fetchMyStocks()
     const codes = stocks.map((stock) => stock.code)
@@ -15,13 +16,15 @@ export async function pushStockPrice(): Promise<CallToolResult> {
       })
     })
     const results = await Promise.all(requests)
-    const stockPrices = results.map((item) => {
-      const [stock] = item
-      return {
-        code: stock?.股票代码 || '',
-        price: Number(stock?.收盘),
-      }
-    }).filter((item) => item.code && item.price)
+    const stockPrices = results
+      .map((item) => {
+        const [stock] = item
+        return {
+          code: stock?.股票代码 || '',
+          price: Number(stock?.收盘),
+        }
+      })
+      .filter((item) => item.code && item.price)
     await updateStockBatch(stockPrices)
     return {
       content: [
@@ -44,24 +47,30 @@ export async function pushStockPrice(): Promise<CallToolResult> {
   }
 }
 
-export async function getStockPosition(): Promise<CallToolResult> {
+async function getStockPosition(): Promise<CallToolResult> {
   try {
     const response = await fetchStockPosition()
-    
+
     if (!response.success) {
       return {
         isError: true,
-        content: [{ type: 'text', text: `获取持仓失败：${response.data}` }]
+        content: [{ type: 'text', text: `获取持仓失败：${response.data}` }],
       }
     }
-    
+
     return {
-      content: [{ type: 'text', text: `持仓信息：${JSON.stringify(response.data)}` }]
+      content: [{ type: 'text', text: `持仓信息：${JSON.stringify(response.data)}` }],
     }
   } catch (e) {
     return {
       isError: true,
-      content: [{ type: 'text', text: `获取持仓失败：${e}` }]
+      content: [{ type: 'text', text: `获取持仓失败：${e}` }],
     }
   }
+}
+
+export function useDashboard(server: McpServer) {
+  server.tool('Push Stock Price', '批量推送股票价格', pushStockPrice)
+
+  server.tool('Get Stock Position', '获取持仓信息', getStockPosition)
 }
