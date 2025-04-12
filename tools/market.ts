@@ -1,5 +1,5 @@
 import dayjs from '@lib/dayjs'
-import { isMainBoardStock, parseDates } from '@lib/utils'
+import { callResult, isMainBoardStock, parseDates } from '@lib/utils'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 import { fetchMarketWeeklyData, type MarketWeeklyParams } from '@services/stock-index'
@@ -39,15 +39,15 @@ async function fetchIndexWeekly(period: MarketWeeklyParams['period']): Promise<C
       data: res[i] ?? [],
     }))
 
-    return {
+    return callResult({
       content: [{ type: 'text', text: JSON.stringify(data) }],
-    }
+    })
   } catch (error) {
     console.error('获取市场周报数据失败：', error)
-    return {
+    return callResult({
       isError: true,
       content: [{ type: 'text', text: `获取市场周报数据失败：${error}` }],
-    }
+    })
   }
 }
 
@@ -68,20 +68,20 @@ async function analyzeStockPool(
       }
     })
 
-    return {
+    return callResult({
       content: [
         {
           type: 'text',
           text: `最近 ${days} 天${type}数据：${JSON.stringify(analysisResults)}`,
         },
       ],
-    }
+    })
   } catch (error) {
     console.error(`获取${type}数据失败：`, error)
-    return {
+    return callResult({
       isError: true,
       content: [{ type: 'text', text: `获取${type}数据失败：${error}` }],
-    }
+    })
   }
 }
 

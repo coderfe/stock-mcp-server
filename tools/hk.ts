@@ -1,3 +1,4 @@
+import { callResult } from '@lib/utils'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 import { fetchGGTStockList, fetchHKFamousStocks, fetchHKStockHistory } from '@services/stock-hk'
@@ -30,17 +31,17 @@ async function getHKStockList(): Promise<CallToolResult> {
   try {
     const result = await fetchGGTStockList()
     const limitedResult = result.slice(0, 30)
-    return {
+    return callResult({
       content: [
         {
           type: 'text',
           text: `港股通成分股：${JSON.stringify(limitedResult)}`,
         },
       ],
-    }
+    })
   } catch (error) {
     console.error('获取港股通成分股数据失败：', error)
-    return {
+    return callResult({
       isError: true,
       content: [
         {
@@ -48,7 +49,7 @@ async function getHKStockList(): Promise<CallToolResult> {
           text: `获取港股通成分股数据失败：${error}`,
         },
       ],
-    }
+    })
   }
 }
 
@@ -71,14 +72,14 @@ export function useHKMarket(server: McpServer) {
         startDate: startDate,
         endDate: endDate,
       })
-      return {
+      return callResult({
         content: [
           {
             type: 'text',
             text: `${symbol} 历史数据：${JSON.stringify(res)}`,
           },
         ],
-      }
+      })
     },
   )
 }

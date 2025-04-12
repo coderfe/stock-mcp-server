@@ -1,4 +1,5 @@
 import dayjs from '@lib/dayjs'
+import { callResult } from '@lib/utils'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 import { fetchMyStocks, fetchStockPosition, updateStockBatch } from '@services/dashboard'
@@ -58,14 +59,14 @@ async function getStockPosition(): Promise<CallToolResult> {
       }
     }
 
-    return {
+    return callResult({
       content: [{ type: 'text', text: `持仓信息：${JSON.stringify(response.data)}` }],
-    }
+    })
   } catch (e) {
-    return {
+    return callResult({
       isError: true,
       content: [{ type: 'text', text: `获取持仓失败：${e}` }],
-    }
+    })
   }
 }
 

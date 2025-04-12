@@ -1,4 +1,5 @@
 import dayjs from '@lib/dayjs'
+import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 
 export function parseDates(days: number) {
   const dates = Array.from({ length: days }, (_, index) => {
@@ -18,4 +19,12 @@ export function isMainBoardStock(symbol: string) {
     shMainBoardPrefix.some((prefix) => code.startsWith(prefix)) ||
     szMainBoardPrefix.some((prefix) => code.startsWith(prefix))
   )
+}
+
+export function callResult(result: CallToolResult) {
+  result.content.unshift({
+    type: 'text',
+    text: `当前系统时间：${dayjs().format('YYYY-MM-DD HH:mm:ss')}`,
+  })
+  return result
 }

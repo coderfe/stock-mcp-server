@@ -1,4 +1,5 @@
 import dayjs from '@lib/dayjs'
+import { callResult } from '@lib/utils'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 import { fetchStockPositionBySymbol } from '@services/dashboard'
@@ -17,12 +18,7 @@ async function analysisStock(symbol: string): Promise<CallToolResult> {
   const endDate = now.format('YYYYMMDD')
 
   const result: CallToolResult = {
-    content: [
-      {
-        type: 'text',
-        text: `今日日期：${now.format('YYYY-MM-DD')}`,
-      },
-    ],
+    content: [],
   }
 
   const tasks = [
@@ -44,7 +40,7 @@ async function analysisStock(symbol: string): Promise<CallToolResult> {
     })
   })
 
-  return result
+  return callResult(result)
 }
 
 export function useStock(server: McpServer) {
@@ -64,14 +60,14 @@ export function useStock(server: McpServer) {
         startDate: startDate,
         endDate: endDate,
       })
-      return {
+      return callResult({
         content: [
           {
             type: 'text',
             text: `个股历史数据：${JSON.stringify(res)}`,
           },
         ],
-      }
+      })
     },
   )
 

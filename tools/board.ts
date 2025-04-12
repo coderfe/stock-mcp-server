@@ -1,3 +1,4 @@
+import { callResult } from '@lib/utils'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 import { fetchIndustryBoardList, fetchIndustryBoardStocks } from '@services/stock-board'
@@ -6,20 +7,16 @@ import { z } from 'zod'
 async function getIndustryBoards(): Promise<CallToolResult> {
   try {
     const res = await fetchIndustryBoardList()
-    return {
+    return callResult({
       content: [
-        {
-          type: 'text',
-          text: '获取行业板块列表成功',
-        },
         {
           type: 'text',
           text: JSON.stringify(res),
         },
       ],
-    }
+    })
   } catch (error) {
-    return {
+    return callResult({
       isError: true,
       content: [
         {
@@ -27,7 +24,7 @@ async function getIndustryBoards(): Promise<CallToolResult> {
           text: `${error}`,
         },
       ],
-    }
+    })
   }
 }
 
