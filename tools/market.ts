@@ -18,7 +18,7 @@ const CHINA_MAIN_INDEXES: StockIndex[] = [
   { name: '科创 50', symbol: '000688' },
 ]
 
-async function fetchIndexWeekly(period: MarketWeeklyParams['period']): Promise<CallToolResult> {
+async function getIndexWeekly(period: MarketWeeklyParams['period']): Promise<CallToolResult> {
   try {
     const startDate = dayjs().startOf('week').format('YYYYMMDD')
     const endDate = dayjs().endOf('week').format('YYYYMMDD')
@@ -85,33 +85,33 @@ async function analyzeStockPool(
   }
 }
 
-async function analyzeLimitUpPool(days: number): Promise<CallToolResult> {
+async function getLimitUpStocks(days: number): Promise<CallToolResult> {
   return analyzeStockPool(days, fetchLimitUpPool, '涨停股池')
 }
 
-async function analyzeStrongPool(days: number): Promise<CallToolResult> {
+async function getStrongSticks(days: number): Promise<CallToolResult> {
   return analyzeStockPool(days, fetchStrongStockPool, '强势股')
 }
 
 export function useMarket(server: McpServer) {
   server.tool(
-    'Market Weekly Data',
-    '市场周报数据',
+    'Get market weekly data',
+    '获取市场周报数据',
     { period: z.enum(['daily', 'weekly', 'monthly']) },
-    async ({ period }) => await fetchIndexWeekly(period),
+    async ({ period }) => await getIndexWeekly(period),
   )
 
   server.tool(
-    'Market Limit Up Analysis',
-    '市场涨停分析',
+    'Get market limit up stocks',
+    '获取市场涨停股',
     { days: z.number().min(1).max(30) },
-    async ({ days }) => await analyzeLimitUpPool(days),
+    async ({ days }) => await getLimitUpStocks(days),
   )
 
   server.tool(
-    'Market Strong Stocks Analysis',
-    '市场强势股分析',
+    'Get market strong stocks',
+    '获取市场强势股',
     { days: z.number().min(1).max(30) },
-    async ({ days }) => await analyzeStrongPool(days),
+    async ({ days }) => await getStrongSticks(days),
   )
 }

@@ -57,10 +57,10 @@ async function getIndustryBoardStocks(boardName: string): Promise<CallToolResult
 }
 
 export function useIndustryBoard(server: McpServer) {
-  server.tool('Fetch Industry Board List', '获取行业板块列表', getIndustryBoards)
+  server.tool('Get industry board list', '获取行业板块列表', getIndustryBoards)
 
   server.tool(
-    'Fetch Industry Board Stocks',
+    'Get industry board stocks',
     '获取行业板块成分股',
     { symbol: z.string().describe('行业板块名称') },
     async ({ symbol }) => await getIndustryBoardStocks(symbol),

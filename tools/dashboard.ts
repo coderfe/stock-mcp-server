@@ -71,7 +71,7 @@ async function getStockPosition(): Promise<CallToolResult> {
 }
 
 export function useDashboard(server: McpServer) {
-  server.tool('Push Stock Price', '批量推送股票价格', pushStockPrice)
+  server.tool('Push stock price', '批量推送股票价格', pushStockPrice)
 
-  server.tool('Get Stock Position', '获取持仓信息', getStockPosition)
+  server.tool('Get my stock position', '获取持仓信息', getStockPosition)
 }

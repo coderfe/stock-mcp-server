@@ -12,7 +12,7 @@ import {
 } from '@services/stock'
 import { z } from 'zod'
 
-async function analysisStock(symbol: string): Promise<CallToolResult> {
+async function getStockAnalysis(symbol: string): Promise<CallToolResult> {
   const now = dayjs()
   const startDate = now.subtract(3, 'month').format('YYYYMMDD')
   const endDate = now.format('YYYYMMDD')
@@ -47,8 +47,8 @@ export function useStock(server: McpServer) {
   const symbolSchema = z.string().regex(/^\d{6}$/, '股票代码必须是 6 位数字')
 
   server.tool(
-    'Individual Stock History',
-    '个股历史行情数据-A股',
+    'Get individual stock history data',
+    '获取A股个股历史数据',
     {
       symbol: symbolSchema,
       startDate: z.string().regex(/^\d{8}$/, '开始日期格式错误，必须是 YYYYMMDD'),
@@ -72,9 +72,11 @@ export function useStock(server: McpServer) {
   )
 
   server.tool(
-    'Analysis Stock',
-    '个股分析',
-    { symbol: symbolSchema },
-    async ({ symbol }) => await analysisStock(symbol),
+    'Get individual stock analysis',
+    '获取A股个股分析',
+    {
+      symbol: symbolSchema,
+    },
+    async ({ symbol }) => await getStockAnalysis(symbol),
   )
 }

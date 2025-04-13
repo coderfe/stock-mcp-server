@@ -30,12 +30,11 @@ async function getHKFamousStocks(): Promise<CallToolResult> {
 async function getHKStockList(): Promise<CallToolResult> {
   try {
     const result = await fetchGGTStockList()
-    const limitedResult = result.slice(0, 30)
     return callResult({
       content: [
         {
           type: 'text',
-          text: `港股通成分股：${JSON.stringify(limitedResult)}`,
+          text: `港股通成分股：${JSON.stringify(result)}`,
         },
       ],
     })
@@ -54,15 +53,15 @@ async function getHKStockList(): Promise<CallToolResult> {
 }
 
 export function useHKMarket(server: McpServer) {
-  server.tool('Get HK Stocks', '港股通成分股', getHKStockList)
+  server.tool('Get HK stocks', '获取港股通成分股', getHKStockList)
 
-  server.tool('Get Famous HK Stocks', '优质港股', getHKFamousStocks)
+  server.tool('Get HK famous stocks', '获取优质港股', getHKFamousStocks)
 
   server.tool(
-    'Individual Stock History — HK',
-    '个股历史行情数据-港股',
+    'Get HK stock history',
+    '获取港股个股历史数据',
     {
-      symbol: z.string().regex(/^\d{5}$/, '股票代码必须是 5 位数字'),
+      symbol: z.string().describe('港股 5 位数字股票代码'),
       startDate: z.string().regex(/^\d{8}$/, '开始日期格式错误，必须是 YYYYMMDD'),
       endDate: z.string().regex(/^\d{8}$/, '结束日期格式错误，必须是 YYYYMMDD'),
     },
