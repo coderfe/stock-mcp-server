@@ -1,5 +1,5 @@
 import dayjs from '@lib/dayjs'
-import { callResult, isMainBoardStock, parseDates } from '@lib/utils'
+import { callResult, isMainBoardStock, parseDates, stringify } from '@lib/utils'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 import { fetchMarketWeeklyData, type MarketWeeklyParams } from '@services/stock-index'
@@ -40,7 +40,7 @@ async function getIndexWeekly(period: MarketWeeklyParams['period']): Promise<Cal
     }))
 
     return callResult({
-      content: [{ type: 'text', text: JSON.stringify(data) }],
+      content: [{ type: 'text', text: stringify(data) }],
     })
   } catch (error) {
     console.error('获取市场周报数据失败：', error)
@@ -72,7 +72,7 @@ async function analyzeStockPool(
       content: [
         {
           type: 'text',
-          text: `最近 ${days} 天${type}数据：${JSON.stringify(analysisResults)}`,
+          text: `最近 ${days} 天${type}数据：${stringify(analysisResults)}`,
         },
       ],
     })
@@ -95,21 +95,21 @@ async function getStrongSticks(days: number): Promise<CallToolResult> {
 
 export function useMarket(server: McpServer) {
   server.tool(
-    'Get market weekly data',
+    'market.get_weekly_data',
     '获取市场周报数据',
     { period: z.enum(['daily', 'weekly', 'monthly']) },
     async ({ period }) => await getIndexWeekly(period),
   )
 
   server.tool(
-    'Get market limit up stocks',
+    'market.get_limit_up_stocks',
     '获取市场涨停股',
     { days: z.number().min(1).max(30) },
     async ({ days }) => await getLimitUpStocks(days),
   )
 
   server.tool(
-    'Get market strong stocks',
+    'market.get_strong_stocks',
     '获取市场强势股',
     { days: z.number().min(1).max(30) },
     async ({ days }) => await getStrongSticks(days),

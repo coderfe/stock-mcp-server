@@ -1,4 +1,4 @@
-import { callResult } from '@lib/utils'
+import { callResult, stringify } from '@lib/utils'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 import { fetchIndustryBoardList, fetchIndustryBoardStocks } from '@services/stock-board'
@@ -11,7 +11,7 @@ async function getIndustryBoards(): Promise<CallToolResult> {
       content: [
         {
           type: 'text',
-          text: JSON.stringify(res),
+          text: stringify(res),
         },
       ],
     })
@@ -39,7 +39,7 @@ async function getIndustryBoardStocks(boardName: string): Promise<CallToolResult
         },
         {
           type: 'text',
-          text: JSON.stringify(res),
+          text: stringify(res),
         },
       ],
     }
@@ -57,10 +57,10 @@ async function getIndustryBoardStocks(boardName: string): Promise<CallToolResult
 }
 
 export function useIndustryBoard(server: McpServer) {
-  server.tool('Get industry board list', '获取行业板块列表', getIndustryBoards)
+  server.tool('board.get_industry_list', '获取行业板块列表', getIndustryBoards)
 
   server.tool(
-    'Get industry board stocks',
+    'board.get_industry_stocks',
     '获取行业板块成分股',
     { symbol: z.string().describe('行业板块名称') },
     async ({ symbol }) => await getIndustryBoardStocks(symbol),

@@ -2,7 +2,7 @@ import { clearCache } from '@lib/redis'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 
 export function useRedis(server: McpServer) {
-  server.tool('Clear Redis Cache', '清除 Redis 缓存', async () => {
+  server.tool('redis.clear_cache', '清除 Redis 缓存', async () => {
     try {
       const deletedCount = await clearCache()
       return {

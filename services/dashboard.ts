@@ -1,3 +1,4 @@
+import { stringify } from '@lib/utils'
 import axios from 'axios'
 
 export const myClient = axios.create({
@@ -16,7 +17,7 @@ export async function fetchStockPosition() {
 
 export async function fetchStockPositionBySymbol(symbol: string) {
   const res = await myClient.get(`/trade/positions/${symbol}`)
-  return JSON.stringify(res.data)
+  return stringify(res.data)
 }
 
 export async function fetchMyStocks() {
@@ -26,5 +27,5 @@ export async function fetchMyStocks() {
 
 export async function updateStockBatch(data: UpdateStockPriceFormData[]) {
   const res = await myClient.post('/trade/positions/batch', data)
-  return JSON.stringify(res.data)
+  return stringify(res.data)
 }

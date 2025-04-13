@@ -1,4 +1,4 @@
-import { callResult } from '@lib/utils'
+import { callResult, stringify } from '@lib/utils'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 import { fetchGGTStockList, fetchHKFamousStocks, fetchHKStockHistory } from '@services/stock-hk'
@@ -11,7 +11,7 @@ async function getHKFamousStocks(): Promise<CallToolResult> {
       content: [
         {
           type: 'text',
-          text: JSON.stringify(res),
+          text: stringify(res),
         },
       ],
     }
@@ -34,7 +34,7 @@ async function getHKStockList(): Promise<CallToolResult> {
       content: [
         {
           type: 'text',
-          text: `港股通成分股：${JSON.stringify(result)}`,
+          text: `港股通成分股：${stringify(result)}`,
         },
       ],
     })
@@ -53,12 +53,12 @@ async function getHKStockList(): Promise<CallToolResult> {
 }
 
 export function useHKMarket(server: McpServer) {
-  server.tool('Get HK stocks', '获取港股通成分股', getHKStockList)
+  server.tool('hk.get_stocks', '获取港股通成分股', getHKStockList)
 
-  server.tool('Get HK famous stocks', '获取优质港股', getHKFamousStocks)
+  server.tool('hk.get_famous_stocks', '获取优质港股', getHKFamousStocks)
 
   server.tool(
-    'Get HK stock history',
+    'hk.get_stock_history',
     '获取港股个股历史数据',
     {
       symbol: z.string().describe('港股 5 位数字股票代码'),
@@ -75,7 +75,7 @@ export function useHKMarket(server: McpServer) {
         content: [
           {
             type: 'text',
-            text: `${symbol} 历史数据：${JSON.stringify(res)}`,
+            text: `${symbol} 历史数据：${stringify(res)}`,
           },
         ],
       })

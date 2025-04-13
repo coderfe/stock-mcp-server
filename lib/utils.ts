@@ -28,3 +28,7 @@ export function callResult(result: CallToolResult) {
   })
   return result
 }
+
+export function stringify(obj: unknown): string {
+  return JSON.stringify(obj)
+}

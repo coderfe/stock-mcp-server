@@ -1,5 +1,5 @@
 import dayjs from '@lib/dayjs'
-import { callResult } from '@lib/utils'
+import { callResult, stringify } from '@lib/utils'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 import { fetchMyStocks, fetchStockPosition, updateStockBatch } from '@services/dashboard'
@@ -60,7 +60,7 @@ async function getStockPosition(): Promise<CallToolResult> {
     }
 
     return callResult({
-      content: [{ type: 'text', text: `持仓信息：${JSON.stringify(response.data)}` }],
+      content: [{ type: 'text', text: `持仓信息：${stringify(response.data)}` }],
     })
   } catch (e) {
     return callResult({
@@ -71,7 +71,7 @@ async function getStockPosition(): Promise<CallToolResult> {
 }
 
 export function useDashboard(server: McpServer) {
-  server.tool('Push stock price', '批量推送股票价格', pushStockPrice)
+  server.tool('dashboard.push_stock_price', '批量推送股票价格', pushStockPrice)
 
-  server.tool('Get my stock position', '获取持仓信息', getStockPosition)
+  server.tool('dashboard.get_position', '获取持仓信息', getStockPosition)
 }

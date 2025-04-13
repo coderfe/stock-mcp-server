@@ -1,5 +1,6 @@
 import type { InternalAxiosRequestConfig } from 'axios'
 import { Redis } from 'ioredis'
+import { stringify } from './utils'
 
 export const CACHE_DURATION = 24 * 60 * 60
 export const CACHE_PREFIX = 'stock_api:'
@@ -36,7 +37,7 @@ export const getCache = async (key: string) => {
 export const setCache = async <T = unknown>(key: string, value: T, duration: number = CACHE_DURATION) => {
   try {
     if (!isEmptyData(value)) {
-      await redis.setex(key, duration, JSON.stringify(value))
+      await redis.setex(key, duration, stringify(value))
     }
   } catch (error) {
     console.error('Redis set error:', error)

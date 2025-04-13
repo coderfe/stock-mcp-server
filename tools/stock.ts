@@ -1,5 +1,5 @@
 import dayjs from '@lib/dayjs'
-import { callResult } from '@lib/utils'
+import { callResult, stringify } from '@lib/utils'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 import { fetchStockPositionBySymbol } from '@services/dashboard'
@@ -36,7 +36,7 @@ async function getStockAnalysis(symbol: string): Promise<CallToolResult> {
     if (res.status !== 'fulfilled') return
     result.content.push({
       type: 'text',
-      text: `${tasks[index]?.name}：${JSON.stringify(res.value)}`,
+      text: `${tasks[index]?.name}：${stringify(res.value)}`,
     })
   })
 
@@ -47,7 +47,7 @@ export function useStock(server: McpServer) {
   const symbolSchema = z.string().regex(/^\d{6}$/, '股票代码必须是 6 位数字')
 
   server.tool(
-    'Get individual stock history data',
+    'stock.get_individual_history',
     '获取A股个股历史数据',
     {
       symbol: symbolSchema,
@@ -64,7 +64,7 @@ export function useStock(server: McpServer) {
         content: [
           {
             type: 'text',
-            text: `个股历史数据：${JSON.stringify(res)}`,
+            text: `个股历史数据：${stringify(res)}`,
           },
         ],
       })
@@ -72,7 +72,7 @@ export function useStock(server: McpServer) {
   )
 
   server.tool(
-    'Get individual stock analysis',
+    'stock.get_individual_analysis',
     '获取A股个股分析',
     {
       symbol: symbolSchema,
