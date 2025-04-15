@@ -9,7 +9,7 @@ import {
   fetchStockIndividualInfo,
   fetchStockMoneyFlow,
   fetchStockValuation,
-} from '@services/stock'
+} from '@services/stock/individual'
 import { z } from 'zod'
 
 async function getStockAnalysis(symbol: string): Promise<CallToolResult> {

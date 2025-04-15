@@ -1,7 +1,7 @@
 import { callResult, stringify } from '@lib/utils'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
-import { fetchGGTStockList, fetchHKFamousStocks, fetchHKStockHistory } from '@services/stock-hk'
+import { fetchGGTStockList, fetchHKFamousStocks, fetchHKStockHistory } from '@services/stock/hk'
 import { z } from 'zod'
 
 async function getHKFamousStocks(): Promise<CallToolResult> {

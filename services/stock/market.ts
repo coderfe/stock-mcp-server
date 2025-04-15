@@ -21,3 +21,11 @@ export async function fetchMarketWeeklyData({
   })
   return res.data
 }
+
+/**
+ * 赚钱效应数据
+ */
+export async function fetchMarketProfitEffect() {
+  const res = await axios.get<ItemValue[]>('/stock_market_activity_legu')
+  return res.data
+}

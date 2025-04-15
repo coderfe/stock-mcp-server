@@ -2,8 +2,8 @@ import dayjs from '@lib/dayjs'
 import { callResult, isMainBoardStock, parseDates, stringify } from '@lib/utils'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
-import { fetchMarketWeeklyData, type MarketWeeklyParams } from '@services/stock-index'
-import { fetchLimitUpPool, fetchStrongStockPool } from '@services/stock-pool'
+import { fetchLimitUpPool, fetchStrongStockPool } from '@services/stock/limit-up'
+import { fetchMarketProfitEffect, fetchMarketWeeklyData, type MarketWeeklyParams } from '@services/stock/market'
 import { z } from 'zod'
 
 interface StockIndex {
@@ -40,7 +40,13 @@ async function getIndexWeekly(period: MarketWeeklyParams['period']): Promise<Cal
     }))
 
     return callResult({
-      content: [{ type: 'text', text: stringify(data) }],
+      content: [
+        {
+          type: 'text',
+          text: '市场指数数据',
+        },
+        { type: 'text', text: stringify(data) }
+      ],
     })
   } catch (error) {
     console.error('获取市场周报数据失败：', error)
@@ -72,7 +78,11 @@ async function analyzeStockPool(
       content: [
         {
           type: 'text',
-          text: `最近 ${days} 天${type}数据：${stringify(analysisResults)}`,
+          text: `最近 ${days} 天${type}数据`,
+        },
+        {
+          type: 'text',
+          text: `${stringify(analysisResults)}`,
         },
       ],
     })
@@ -113,5 +123,34 @@ export function useMarket(server: McpServer) {
     '获取市场强势股',
     { days: z.number().min(1).max(30) },
     async ({ days }) => await getStrongSticks(days),
+  )
+
+  server.tool(
+    'market.get_market_profit_effect',
+    '获取市场赚钱效应数据',
+    {},
+    async () => {
+      try {
+        const res = await fetchMarketProfitEffect()
+        return callResult({
+          content: [
+            {
+              type: 'text',
+              text: '市场赚钱效应数据',
+            },
+            {
+              type: 'text',
+              text: stringify(res),
+            },
+          ],
+        })
+      } catch (error) {
+        console.error('获取市场赚钱效应数据失败：', error)
+        return callResult({
+          isError: true,
+          content: [{ type: 'text', text: `获取市场赚钱效应数据失败：${error}` }],
+        })
+      }
+    }
   )
 }

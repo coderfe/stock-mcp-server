@@ -3,7 +3,7 @@ import { callResult, stringify } from '@lib/utils'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 import { fetchMyStocks, fetchStockPosition, updateStockBatch } from '@services/dashboard'
-import { fetchStockHistory } from '@services/stock'
+import { fetchStockHistory } from '@services/stock/individual'
 
 async function pushStockPrice(): Promise<CallToolResult> {
   try {
