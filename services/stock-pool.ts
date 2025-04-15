@@ -1,11 +1,11 @@
-import stockClient from "@lib/stockClient"
+import axios from "@lib/axios/stock"
 
 /**
  * 获取涨停股池
  */
 export async function fetchLimitUpPool(date: string) {
   try {
-    const res = await stockClient.get<LimitUpStock[]>('/stock_zt_pool_em', {
+    const res = await axios.get<LimitUpStock[]>('/stock_zt_pool_em', {
       params: { date },
     })
     return res.data
@@ -20,7 +20,7 @@ export async function fetchLimitUpPool(date: string) {
  */
 export async function fetchStrongStockPool(date: string) {
   try {
-    const res = await stockClient.get<StrongStock[]>('/stock_zt_pool_strong_em', {
+    const res = await axios.get<StrongStock[]>('/stock_zt_pool_strong_em', {
       params: { date },
     })
     return res.data

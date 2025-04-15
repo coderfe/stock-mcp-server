@@ -1,4 +1,4 @@
-import stockClient from "@lib/stockClient"
+import axios from "@lib/axios/stock"
 
 export type MarketWeeklyParams = {
   symbol: string
@@ -16,7 +16,7 @@ export async function fetchMarketWeeklyData({
   startDate,
   endDate,
 }: MarketWeeklyParams) {
-  const res = await stockClient.get<IndexHistory[]>('/index_zh_a_hist', {
+  const res = await axios.get<IndexHistory[]>('/index_zh_a_hist', {
     params: { symbol, period, start_date: startDate, end_date: endDate },
   })
   return res.data

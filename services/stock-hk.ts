@@ -1,11 +1,11 @@
-import stockClient from '@lib/stockClient'
+import axios from '@lib/axios/stock'
 
 /**
  * 获取港股通成分股
  */
 export async function fetchGGTStockList() {
   try {
-    const res = await stockClient.get<HKStockData[]>('/stock_hk_ggt_components_em')
+    const res = await axios.get<HKStockData[]>('/stock_hk_ggt_components_em')
     return res.data
   } catch (e) {
     console.log(e)
@@ -22,7 +22,7 @@ export async function fetchHKStockHistory({
   endDate,
 }: HistoryParams) {
   try {
-    const res = await stockClient.get<StockHistory[]>('/stock_hk_hist', {
+    const res = await axios.get<StockHistory[]>('/stock_hk_hist', {
       params: {
         symbol,
         start_date: startDate,
@@ -42,7 +42,7 @@ export async function fetchHKStockHistory({
  */
 export async function fetchHKFamousStocks() {
   try {
-    const res = await stockClient.get<HKStockData[]>('/stock_hk_famous_spot_em')
+    const res = await axios.get<HKStockData[]>('/stock_hk_famous_spot_em')
     return res.data
   } catch (e) {
     console.log(e)

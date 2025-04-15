@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { generateCacheKey, getCache, setCache } from './redis'
+import { generateCacheKey, getCache, setCache } from '../redis'
 
-export const stockClient = axios.create({
+export const instance = axios.create({
   baseURL: 'http://127.0.0.1:8080/api/public',
   headers: {
     'Content-Type': 'application/json',
@@ -9,7 +9,7 @@ export const stockClient = axios.create({
   timeout: 10000,
 })
 
-stockClient.interceptors.request.use(async (config) => {
+instance.interceptors.request.use(async (config) => {
   if (config.method?.toLowerCase() === 'get') {
     const cacheKey = generateCacheKey(config)
     const cachedData = await getCache(cacheKey)
@@ -34,7 +34,7 @@ stockClient.interceptors.request.use(async (config) => {
   return config
 })
 
-stockClient.interceptors.response.use(
+instance.interceptors.response.use(
   async (response) => {
     if (response.config.method?.toLowerCase() === 'get') {
       const cacheKey = generateCacheKey(response.config)
@@ -51,4 +51,4 @@ stockClient.interceptors.response.use(
   },
 )
 
-export default stockClient
+export default instance

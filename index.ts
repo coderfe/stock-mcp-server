@@ -1,7 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import packageJson from './package.json' with { type: 'json' }
-import { useDashboard, useHKMarket, useIndustryBoard, useMarket, useRedis, useStock } from './tools'
+import { useTools } from './tools'
 
 const server = new McpServer(
   {
@@ -18,12 +18,7 @@ const server = new McpServer(
   },
 )
 
-useHKMarket(server)
-useMarket(server)
-useIndustryBoard(server)
-useStock(server)
-useDashboard(server)
-useRedis(server)
+useTools(server)
 
 const transport = new StdioServerTransport()
 await server.connect(transport)
