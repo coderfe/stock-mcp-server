@@ -14,8 +14,9 @@ export const isEmptyData = (data: unknown | null | undefined | Array<unknown> | 
 
 export const generateCacheKey = (config: InternalAxiosRequestConfig): string => {
   const { baseURL, url, params } = config
+  const cacheKey = config.headers?.['cache-key'] as string | ''
   const queryString = new URLSearchParams(params).toString()
-  const key = `${baseURL}${url}?${queryString}`
+  const key = `${baseURL}${url}?${queryString}&${cacheKey}`
   return `${CACHE_PREFIX}${Buffer.from(key).toString('base64')}`
 }
 

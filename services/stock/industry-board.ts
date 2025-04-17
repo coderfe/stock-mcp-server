@@ -1,10 +1,17 @@
 import axios from '@lib/axios/stock'
+import dayjs from '@lib/dayjs'
 
 /**
  * 行业板块
  */
-export async function fetchIndustryBoardList() {
-  const res = await axios.get<IndustrySector[]>('/stock_board_industry_name_em')
+const defaultDate = dayjs().format('YYYYMMDD')
+export async function fetchIndustryBoardList(date: string = defaultDate) {
+  const res = await axios.get<IndustrySector[]>('/stock_board_industry_name_em', {
+    headers: {
+      'cache-duration': 365 * 24 * 60 * 60,
+      'cache-key': date
+    }
+  })
   return res.data
 }
 
