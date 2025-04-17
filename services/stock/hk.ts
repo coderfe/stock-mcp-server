@@ -38,6 +38,21 @@ export async function fetchHKStockHistory({
 }
 
 /**
+ * 港股个股详情
+ */
+export async function fetchHKStockInfo(symbol: string) {
+  try {
+    const res = await axios.get<ItemValue[]>('/stock_individual_basic_info_hk_xq', {
+      params: { symbol },
+    })
+    return res.data
+  } catch (e) {
+    console.log(e)
+    return []
+  }
+}
+
+/**
  * 优质港股个股
  */
 export async function fetchHKFamousStocks() {

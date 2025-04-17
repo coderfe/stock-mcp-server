@@ -52,6 +52,7 @@ async function getHKStockList(): Promise<CallToolResult> {
   }
 }
 
+
 export function useHKMarket(server: McpServer) {
   server.tool('hk.get_stocks', '获取港股通成分股', getHKStockList)
 
