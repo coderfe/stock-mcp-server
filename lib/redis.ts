@@ -2,7 +2,7 @@ import type { InternalAxiosRequestConfig } from 'axios'
 import { Redis } from 'ioredis'
 import { stringify } from './utils'
 
-export const CACHE_DURATION = 24 * 60 * 60
+export const CACHE_DURATION = 8 * 60 * 60
 export const CACHE_PREFIX = 'stock_api:'
 
 export const isEmptyData = (data: unknown | null | undefined | Array<unknown> | Record<string, unknown>): boolean => {
@@ -13,11 +13,20 @@ export const isEmptyData = (data: unknown | null | undefined | Array<unknown> | 
 }
 
 export const generateCacheKey = (config: InternalAxiosRequestConfig): string => {
-  const { baseURL, url, params } = config
-  const cacheKey = config.headers?.['cache-key'] as string | ''
+  const { url = '', params } = config
+  const customCacheKey = config.headers?.['cache-key'] as string | undefined
   const queryString = new URLSearchParams(params).toString()
-  const key = `${baseURL}${url}?${queryString}&${cacheKey}`
-  return `${CACHE_PREFIX}${Buffer.from(key).toString('base64')}`
+
+  let key = url.replace('/', '').replaceAll('/', '_')
+  if (queryString) {
+    key += `:${queryString}`
+  }
+
+  if (customCacheKey) {
+    key += `:${customCacheKey}`
+  }
+
+  return `${CACHE_PREFIX}${key}`
 }
 
 export const redis = new Redis()
