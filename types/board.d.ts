@@ -11,6 +11,7 @@ declare interface IndustrySector {
   下跌家数: number
   领涨股票: string
   '领涨股票-涨跌幅': number
+  日期: string
 }
 
 declare interface IndustryStock {

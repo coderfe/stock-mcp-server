@@ -93,7 +93,7 @@ export function useIndustryBoard(server: McpServer) {
 
   server.tool(
     'board.get_industry_rotation',
-    '获取过去n天行业板块',
+    '获取过去n天行业板块轮动',
     { days: z.number().describe('天数').max(30) },
     async ({ days }) => await getIndustryBoardsRotation(days)
   )
