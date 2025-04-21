@@ -111,3 +111,5 @@ export const getCachesByPrefix = async (prefix: string, limit?: number): Promise
     return {};
   }
 }
+
+export const ONE_YEAR = 365 * 24 * 60 * 60

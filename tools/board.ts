@@ -45,7 +45,7 @@ async function getIndustryBoardsRotation(days: number): Promise<CallToolResult> 
     content: [
       {
         type: 'text',
-        text: stringify(Object.values(resultObj)),
+        text: stringify(Object.values(resultObj).reverse()),
       },
     ],
   }
