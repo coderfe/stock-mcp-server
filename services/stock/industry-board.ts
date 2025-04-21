@@ -12,10 +12,7 @@ export async function fetchIndustryBoardList(date: string = defaultDate) {
       'cache-key': date ? date : ''
     }
   })
-  return (res.data || []).map((item) => ({
-    ...item,
-    日期: date,
-  }))
+  return res.data
 }
 
 /**

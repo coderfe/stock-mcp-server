@@ -75,3 +75,39 @@ export const clearCache = async (): Promise<number> => {
     throw error
   }
 }
+
+export const getCachesByPrefix = async (prefix: string, limit?: number): Promise<Record<string, any>> => {
+  const result: Record<string, any> = {};
+  let cursor = '0';
+  let count = 0;
+
+  try {
+    do {
+      const [newCursor, keys] = await redis.scan(cursor, 'MATCH', `${prefix}*`, 'COUNT', '100');
+      cursor = newCursor;
+
+      if (keys.length > 0) {
+        const values = await redis.mget(...keys);
+        for (let i = 0; i < keys.length; i++) {
+          if (limit && count >= limit) {
+            return result;
+          }
+          const value = values[i];
+          const key = keys[i];
+          if (value && key) {
+            const parsedData = JSON.parse(value);
+            if (!isEmptyData(parsedData)) {
+              result[key] = parsedData;
+              count++;
+            }
+          }
+        }
+      }
+    } while (cursor !== '0' && (!limit || count < limit));
+
+    return result;
+  } catch (error) {
+    console.error('Redis get caches by prefix error:', error);
+    return {};
+  }
+}

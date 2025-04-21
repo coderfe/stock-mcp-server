@@ -1,4 +1,5 @@
-import { callResult, parseDates, stringify } from '@lib/utils'
+import { getCachesByPrefix } from '@lib/redis'
+import { callResult, stringify } from '@lib/utils'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 import { fetchIndustryBoardList, fetchIndustryBoardStocks } from '@services/stock/industry-board'
@@ -33,30 +34,20 @@ async function getIndustryBoards(): Promise<CallToolResult> {
 }
 
 async function getIndustryBoardsRotation(days: number): Promise<CallToolResult> {
-  const dates = parseDates(days)
-  const requests = dates.map((date) => fetchIndustryBoardList(date))
-  try {
-    const res = await Promise.all(requests)
-    const topBoards = res.map(board => board.slice(0, 10));
-    return callResult({
-      content: [
-        {
-          type: 'text',
-          text: stringify(topBoards),
-        },
-      ],
-    })
-  }
-  catch (error) {
-    return callResult({
-      isError: true,
-      content: [
-        {
-          type: 'text',
-          text: `${error}`,
-        },
-      ],
-    })
+  const PREFIX = 'stock_api:stock_board_industry_name_em'
+  const res = await getCachesByPrefix(PREFIX, days)
+  const sortedKeys = Object.keys(res).sort()
+  const resultObj: Record<string, unknown[]> = {}
+  sortedKeys.map(key => {
+    resultObj[key] = res[key]
+  })
+  return {
+    content: [
+      {
+        type: 'text',
+        text: stringify(Object.values(resultObj)),
+      },
+    ],
   }
 }
 
