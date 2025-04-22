@@ -33,13 +33,13 @@ async function getIndustryBoards(): Promise<CallToolResult> {
   }
 }
 
+const PREFIX = 'stock_api:stock_board_industry_name_em'
 async function getIndustryBoardsRotation(days: number): Promise<CallToolResult> {
-  const PREFIX = 'stock_api:stock_board_industry_name_em'
-  const res = await getCachesByPrefix(PREFIX, days)
-  const sortedKeys = Object.keys(res).sort()
-  const resultObj: Record<string, unknown[]> = {}
-  sortedKeys.map(key => {
-    resultObj[key] = res[key]
+  const res = await getCachesByPrefix<LimitUpStock[]>(PREFIX, days)
+  const resultObj: Record<string, LimitUpStock[]> = {}
+  Object.keys(res).sort().map(key => {
+    const data = res[key]
+    data && (resultObj[key] = data)
   })
   return {
     content: [

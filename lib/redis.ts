@@ -76,8 +76,8 @@ export const clearCache = async (): Promise<number> => {
   }
 }
 
-export const getCachesByPrefix = async (prefix: string, limit?: number): Promise<Record<string, any>> => {
-  const result: Record<string, any> = {};
+export const getCachesByPrefix = async <T = unknown>(prefix: string, limit?: number): Promise<Record<string, T>> => {
+  const result: Record<string, T> = {};
   let cursor = '0';
   let count = 0;
 
