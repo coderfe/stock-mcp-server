@@ -1,4 +1,5 @@
 import axios from "@lib/axios/stock"
+import { isMainBoardStock } from "@lib/utils"
 
 export type MarketWeeklyParams = {
   symbol: string
@@ -27,5 +28,34 @@ export async function fetchMarketWeeklyData({
  */
 export async function fetchMarketProfitEffect() {
   const res = await axios.get<ItemValue[]>('/stock_market_activity_legu')
+  return res.data
+}
+
+/**
+ * 单次获取指定 date 的财报发行, 提供港股的财报发行数据
+ */
+export async function fetchMarketEarningsRelease(date: string) {
+  const res = await axios.get<MarketStockQuote[]>('/news_report_time_baidu', {
+    params: { date },
+    headers: {
+      'use-cache': 'false',
+    }
+  })
+  const isMain = (type: string) => ['SH', 'SZ'].includes(type)
+  const data = res.data.filter(item => isMainBoardStock(item.股票代码) && isMain(item.交易所))
+  return {
+    [date]: data
+  }
+}
+
+/**
+ * 财经资讯
+ */
+export async function fetchMarketNews() {
+  const res = await axios.get('/stock_info_global_em', {
+    headers: {
+      'use-cache': 'false',
+    }
+  })
   return res.data
 }

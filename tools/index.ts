@@ -3,6 +3,7 @@ import { useIndustryBoard } from './board'
 import { useDashboard } from './dashboard'
 import { useHKMarket } from './hk'
 import { useMarket } from './market'
+import { usePickStock } from './pick'
 import { useRedis } from './redis'
 import { useStock } from './stock'
 
@@ -13,4 +14,5 @@ export function useTools(server: McpServer) {
   useStock(server)
   useDashboard(server)
   useRedis(server)
+  usePickStock(server)
 }

@@ -3,7 +3,7 @@ import { callResult, isMainBoardStock, parseDates, stringify } from '@lib/utils'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 import { fetchLimitUpPool, fetchStrongStockPool } from '@services/stock/limit-up'
-import { fetchMarketProfitEffect, fetchMarketWeeklyData, type MarketWeeklyParams } from '@services/stock/market'
+import { fetchMarketEarningsRelease, fetchMarketNews, fetchMarketProfitEffect, fetchMarketWeeklyData, type MarketWeeklyParams } from '@services/stock/market'
 import { z } from 'zod'
 
 interface StockIndex {
@@ -149,6 +149,60 @@ export function useMarket(server: McpServer) {
         return callResult({
           isError: true,
           content: [{ type: 'text', text: `获取市场赚钱效应数据失败：${error}` }],
+        })
+      }
+    }
+  )
+
+  server.tool(
+    'market.get_earnings_release',
+    '获取后续n天财报发行数据',
+    { days: z.number().min(1).max(7) },
+    async ({ days }) => {
+      try {
+        const dates = parseDates(days, false)
+        const requests = dates.map(d => fetchMarketEarningsRelease(d))
+        const res = await Promise.all(requests)
+        return callResult({
+          content: [
+            {
+              type: 'text',
+              text: `最近 ${days} 天财报发行数据`,
+            },
+            {
+              type: 'text',
+              text: `${stringify(res.reduce((acc, cur) => ({ ...acc, ...cur }), {}))}`,
+            },
+          ],
+        })
+      } catch (error) {
+        return callResult({
+          isError: true,
+          content: [{ type: 'text', text: `获取财报发行数据失败：${error}` }],
+        })
+      }
+    }
+  )
+
+  server.tool(
+    'market.get_financial_news',
+    '获取财经资讯',
+    { count: z.number().min(1).max(100).default(10) },
+    async ({ count }) => {
+      try {
+        const res = await fetchMarketNews()
+        return callResult({
+          content: [
+            {
+              type: 'text',
+              text: `${stringify(res.slice(count))}`,
+            },
+          ],
+        })
+      } catch (error) {
+        return callResult({
+          isError: true,
+          content: [{ type: 'text', text: `获取财经资讯失败：${error}` }],
         })
       }
     }

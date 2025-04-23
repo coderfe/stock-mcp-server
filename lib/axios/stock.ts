@@ -10,7 +10,10 @@ export const instance = axios.create({
 })
 
 instance.interceptors.request.use(async (config) => {
-  if (config.method?.toLowerCase() === 'get') {
+  if (
+    config.method?.toLowerCase() === 'get' &&
+    config.headers?.['use-cache'] !== 'false'
+  ) {
     const cacheKey = generateCacheKey(config)
     const cachedData = await getCache(cacheKey)
     if (cachedData) {
@@ -36,7 +39,10 @@ instance.interceptors.request.use(async (config) => {
 
 instance.interceptors.response.use(
   async (response) => {
-    if (response.config.method?.toLowerCase() === 'get') {
+    if (
+      response.config.method?.toLowerCase() === 'get' &&
+      response.config.headers?.['use-cache'] !== 'false'
+    ) {
       const cacheKey = generateCacheKey(response.config)
       const cacheDuration = response.config.headers?.['cache-duration'] as number | undefined
       await setCache(cacheKey, response.data, cacheDuration)
